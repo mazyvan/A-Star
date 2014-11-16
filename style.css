@@ -1,0 +1,37 @@
+body {
+  -webkit-user-select: none;
+  font-family: Georgia, serif;
+}
+
+h1, p {
+  text-align: center;
+}
+
+div {
+  margin: 0 auto;
+  position: relative;
+}
+
+span {
+  height: 11px;
+  width: 11px;
+  background: grey;
+  display: block;
+  position: absolute;
+}
+
+.barrier {
+  background: black;
+}
+
+.from {
+  background: lime;
+}
+
+.step {
+  background: pink;
+}
+
+.to {
+  background: red;
+}
