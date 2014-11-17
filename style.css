@@ -30,8 +30,6 @@ div {
 }
 
 span {
-  height: 11px;
-  width: 11px;
   background: grey;
   display: block;
   position: absolute;

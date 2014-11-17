@@ -46,6 +46,7 @@ function constructMap() {
       var cell = document.createElement('span')
       cell.x = j
       cell.y = i
+      cell.style.height = cell.style.width = (SIDE - 1) + 'px'
       cell.style.top = i * SIDE + 'px'
       cell.style.left = j * SIDE + 'px'
       worldMap[i][j] = { x: j, y: i, walkable: true }
