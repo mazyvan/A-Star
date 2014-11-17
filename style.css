@@ -1,5 +1,4 @@
 body {
-  -webkit-user-select: none;
   font-family: Georgia, serif;
 }
 
@@ -7,9 +6,27 @@ h1, p {
   text-align: center;
 }
 
+b.obstacle {
+  color: darkblue;
+}
+
+b.from {
+  color: lime;
+}
+
+b.to {
+  color: red;
+}
+
+a {
+  color: darkcyan;
+  font-weight: bold;
+}
+
 div {
   margin: 0 auto;
   position: relative;
+  -webkit-user-select: none;
 }
 
 span {
@@ -20,18 +37,18 @@ span {
   position: absolute;
 }
 
-.barrier {
-  background: black;
+span.obstacle {
+  background: darkblue;
 }
 
-.from {
+span.from {
   background: lime;
 }
 
-.step {
+span.step {
   background: pink;
 }
 
-.to {
+span.to {
   background: red;
 }

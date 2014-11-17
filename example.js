@@ -73,8 +73,8 @@ function inspectMouse() {
 
   world.addEventListener('mousemove', function(e) {
     var target = e.target
-    if(dragging && e.button === 0 && target.tagName === 'SPAN') {
-      target.className = 'barrier'
+    if(dragging && e.button === 0 && target.tagName === 'SPAN' && target.className !== 'from' && target.className !== 'to') {
+      target.className = 'obstacle'
       worldMap[target.y][target.x].walkable = false
     }
   }, false)
