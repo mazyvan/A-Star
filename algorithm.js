@@ -11,85 +11,98 @@ function aStarSearch(from, to, worldMap) {
 
   function getChildren(parent) {
     var children = []
+    var walkables = {}
     var child
 
-    if(parent.x > 0 && parent.y > 0) { // top left
-      child = worldMap[parent.y - 1][parent.x - 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
-        children.push(child)
-      }
-    }
-    if(parent.y > 0) { // top
-      child = worldMap[parent.y - 1][parent.x]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
-        child.parent = parent
-        child.cost = parent.cost + 10
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
-        children.push(child)
-      }
-    }
-    if(parent.x < width - 1 && parent.y > 0) { // top right
-      child = worldMap[parent.y - 1][parent.x + 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
-        children.push(child)
-      }
-    }
-    if(parent.x > 0) { // left
+    // left
+    if(parent.x > 0) {
       child = worldMap[parent.y][parent.x - 1]
       if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
         child.parent = parent
         child.cost = parent.cost + 10
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
         children.push(child)
       }
+      walkables.left = child.walkable
     }
-    if(parent.x < width - 1) { // right
+    // right
+    if(parent.x < width - 1) {
       child = worldMap[parent.y][parent.x + 1]
       if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
         child.parent = parent
         child.cost = parent.cost + 10
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
         children.push(child)
       }
+      walkables.right = child.walkable
     }
-    if(parent.x > 0 && parent.y < height - 1) { // bottom left
-      child = worldMap[parent.y + 1][parent.x - 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
+    // up
+    if(parent.y > 0) {
+      child = worldMap[parent.y - 1][parent.x]
+      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
         child.parent = parent
-        child.cost = parent.cost + 14
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
+        child.cost = parent.cost + 10
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
         children.push(child)
       }
+      walkables.up = child.walkable
     }
-    if(parent.y < height - 1) { // bottom
+    // down
+    if(parent.y < height - 1) {
       child = worldMap[parent.y + 1][parent.x]
       if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
         child.parent = parent
         child.cost = parent.cost + 10
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
+        children.push(child)
+      }
+      walkables.down = child.walkable
+    }
+    // upleft
+    if((walkables.up || walkables.left) && (parent.x > 0 && parent.y > 0)) {
+      child = worldMap[parent.y - 1][parent.x - 1]
+      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
+        child.parent = parent
+        child.cost = parent.cost + 14
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
         children.push(child)
       }
     }
-    if(parent.x < width - 1 && parent.y < height - 1) { // bottom right
+    // upright
+    if((walkables.up || walkables.right) && (parent.x < width - 1 && parent.y > 0)) {
+      child = worldMap[parent.y - 1][parent.x + 1]
+      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
+        child.parent = parent
+        child.cost = parent.cost + 14
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
+        children.push(child)
+      }
+    }
+    // downleft
+    if((walkables.down || walkables.left) && (parent.x > 0 && parent.y < height - 1)) {
+      child = worldMap[parent.y + 1][parent.x - 1]
+      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
+        child.parent = parent
+        child.cost = parent.cost + 14
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
+        children.push(child)
+      }
+    }
+    // downright
+    if((walkables.down || walkables.right) && (parent.x < width - 1 && parent.y < height - 1)) {
       child = worldMap[parent.y + 1][parent.x + 1]
       if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
         child.parent = parent
         child.cost = parent.cost + 14
-        child.heuristic = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.heuristic
+        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
+        child.estimated = child.cost + child.manhattan
         children.push(child)
       }
     }
@@ -106,20 +119,20 @@ function aStarSearch(from, to, worldMap) {
   openList.push(from)
 
   while(openList.length) {
-    var current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop()
+    var current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop() // pick the one with minimal estimated value from open list
     var children = getChildren(current)
 
     closeList.push(current)
 
     for(var i = 0, l = children.length; i < l; i++) {
-      if(children[i].heuristic === 0) { // found!
-        var point = children[i].parent
+      if(children[i].manhattan === 0) { // destination found!
+        var step = children[i].parent
         var path = []
-        while(point.cost !== 0) {
-          path.unshift(point)
-          point = point.parent
+        while(step.cost !== 0) { // haven't got back to starting point
+          path.push(step)
+          step = step.parent
         }
-        return path
+        return path.reverse()
       }
 
       if(openList.indexOf(children[i]) === -1) {
