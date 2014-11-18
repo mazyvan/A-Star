@@ -19,7 +19,8 @@ function aStarSearch(from, to, worldMap) {
     // LEFT
     if(parent.x > 0) {
       neighbor = worldMap[parent.y][parent.x - 1]
-      // If a neighbor is (1) walkable, (2) not closed, (3) has lower cost through current node, set current node as its parent and recalculate its G, H, F values.
+      // If a neighbor is (1) walkable, (2) not closed and (3) has lower cost through current node,
+      // set current node as its parent and recalculate its cost, manhattan and estimated values.
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
         neighbor.parent = parent
         neighbor.cost = parent.cost + ORTHOGONAL
