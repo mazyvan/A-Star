@@ -4,141 +4,167 @@
  */
 
 function aStarSearch(from, to, worldMap) {
+  var ORTHOGONAL = 10
+  var DIAGONAL = 14
   var height = worldMap.length
   var width = worldMap[0].length
   var openList = []
-  var closeList = []
 
+  // Get a node's children.
   function getChildren(parent) {
     var children = []
     var walkables = {}
-    var child
+    var neighbor
 
-    // left
+    // LEFT
     if(parent.x > 0) {
-      child = worldMap[parent.y][parent.x - 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
-        child.parent = parent
-        child.cost = parent.cost + 10
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y][parent.x - 1]
+      // If a neighbor is (1) walkable, (2) not closed, (3) has lower cost through current node, set current node as its parent and recalculate its G, H, F values.
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + ORTHOGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
-      walkables.left = child.walkable
+      walkables.left = neighbor.walkable
     }
-    // right
+
+    // RIGHT
     if(parent.x < width - 1) {
-      child = worldMap[parent.y][parent.x + 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
-        child.parent = parent
-        child.cost = parent.cost + 10
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y][parent.x + 1]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + ORTHOGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
-      walkables.right = child.walkable
+      walkables.right = neighbor.walkable
     }
-    // up
+
+    // UP
     if(parent.y > 0) {
-      child = worldMap[parent.y - 1][parent.x]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
-        child.parent = parent
-        child.cost = parent.cost + 10
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y - 1][parent.x]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + ORTHOGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
-      walkables.up = child.walkable
+      walkables.up = neighbor.walkable
     }
-    // down
+
+    // DOWN
     if(parent.y < height - 1) {
-      child = worldMap[parent.y + 1][parent.x]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 10) {
-        child.parent = parent
-        child.cost = parent.cost + 10
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y + 1][parent.x]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + ORTHOGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
-      walkables.down = child.walkable
+      walkables.down = neighbor.walkable
     }
-    // upleft
+
+    // UPLEFT
+    // Do not consider upleft neighbor if both up neighbor and left neighbor are not walkable.
     if((walkables.up || walkables.left) && (parent.x > 0 && parent.y > 0)) {
-      child = worldMap[parent.y - 1][parent.x - 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y - 1][parent.x - 1]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + DIAGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
     }
-    // upright
+
+    // UPRIGHT
     if((walkables.up || walkables.right) && (parent.x < width - 1 && parent.y > 0)) {
-      child = worldMap[parent.y - 1][parent.x + 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y - 1][parent.x + 1]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + DIAGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
     }
-    // downleft
+
+    // DOWNLEFT
     if((walkables.down || walkables.left) && (parent.x > 0 && parent.y < height - 1)) {
-      child = worldMap[parent.y + 1][parent.x - 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y + 1][parent.x - 1]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + DIAGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
     }
-    // downright
+
+    // DOWNRIGHT
     if((walkables.down || walkables.right) && (parent.x < width - 1 && parent.y < height - 1)) {
-      child = worldMap[parent.y + 1][parent.x + 1]
-      if(child.walkable && closeList.indexOf(child) === -1 && child.cost > parent.cost + 14) {
-        child.parent = parent
-        child.cost = parent.cost + 14
-        child.manhattan = 10 * (Math.abs(child.x - to.x) + Math.abs(child.y - to.y))
-        child.estimated = child.cost + child.manhattan
-        children.push(child)
+      neighbor = worldMap[parent.y + 1][parent.x + 1]
+      if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
+        neighbor.parent = parent
+        neighbor.cost = parent.cost + DIAGONAL
+        neighbor.manhattan = ORTHOGONAL * (Math.abs(neighbor.x - to.x) + Math.abs(neighbor.y - to.y))
+        neighbor.estimated = neighbor.cost + neighbor.manhattan
+        children.push(neighbor)
       }
     }
 
     return children
   }
 
+  // Reinitialize
   for(var h = 0; h < height; h++) {
     for(var w = 0; w < width; w++) {
       worldMap[h][w].cost = Infinity
+      worldMap[h][w].open = false
+      worldMap[h][w].closed = false
+      worldMap[h][w].parent = null
     }
   }
   from.cost = 0
+  from.open = true
   openList.push(from)
 
+  // Search while open list is not empty.
   while(openList.length) {
-    var current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop() // pick the one with minimal estimated value from open list
+    // Pick the one with lowest estimated value from open list.
+    var current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop()
     var children = getChildren(current)
 
-    closeList.push(current)
+    current.closed = true
 
     for(var i = 0, l = children.length; i < l; i++) {
-      if(children[i].manhattan === 0) { // destination found!
+      // Destination reached!
+      if(children[i].manhattan === 0) {
         var step = children[i].parent
         var path = []
-        while(step.cost !== 0) { // haven't got back to starting point
+
+        // Haven't got back to starting point yet.
+        while(step.cost !== 0) {
           path.push(step)
           step = step.parent
         }
+
         return path.reverse()
       }
 
-      if(openList.indexOf(children[i]) === -1) {
+      // If the child is not in open list, put it in.
+      if(!children[i].open) {
+        children[i].open = true
         openList.push(children[i])
       }
-    }        
+    }
   }
+
+  // Cannot find a path.
   return null
 }
