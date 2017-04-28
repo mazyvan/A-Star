@@ -1,26 +1,5 @@
 body {
-  font-family: Georgia, serif;
-}
-
-h1, p {
   text-align: center;
-}
-
-b.obstacle {
-  color: darkblue;
-}
-
-b.from {
-  color: lime;
-}
-
-b.to {
-  color: red;
-}
-
-a {
-  color: darkcyan;
-  font-weight: bold;
 }
 
 div {
@@ -30,8 +9,8 @@ div {
 }
 
 span {
-  background: rgba(187, 187, 187, 0.99);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) !important;
+  background: rgba(187, 187, 187, 1);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
   display: block;
   position: absolute;
   cursor: pointer;

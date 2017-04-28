@@ -5,13 +5,13 @@ var world = document.getElementById('world')
 var extremes = { from: null, to: null }
 var dragging = false
 var worldMap = []
-var cells
+var nodes
 
 function drawSteps(path) {
   if (path) {
     for (var i = 0, l = path.length; i < l; i++) {
       var step = path[i]
-      cells[WIDTH * step.y + step.x].className = 'step'
+      nodes[WIDTH * step.y + step.x].className = 'step'
     }
   }
 }
@@ -20,7 +20,7 @@ var drawStepsAsync = eval(Wind.compile('async', function (path) {
   if (path) {
     for (var i = 0, l = path.length; i < l; i++) {
       var step = path[i]
-      cells[WIDTH * step.y + step.x].className = 'step'
+      nodes[WIDTH * step.y + step.x].className = 'step'
       $await(Wind.Async.sleep(10))
     }
   }
@@ -35,7 +35,6 @@ function drawPath() {
   var to = { x: extremes.to.x, y: extremes.to.y }
   var path = aStarSearch(from, to, worldMap)
   drawStepsAsync(path).start()
-  // drawSteps(path)
 }
 
 function constructMap() {
@@ -43,20 +42,20 @@ function constructMap() {
   for (var i = 0; i < HEIGHT; i++) {
     worldMap[i] = []
     for (var j = 0; j < WIDTH; j++) {
-      var cell = document.createElement('span')
-      cell.x = j
-      cell.y = i
-      cell.style.height = cell.style.width = (SIDE - 5) + 'px'
-      cell.style.top = i * SIDE + 'px'
-      cell.style.left = j * SIDE + 'px'
+      var node = document.createElement('span')
+      node.x = j
+      node.y = i
+      node.style.height = node.style.width = (SIDE - 5) + 'px'
+      node.style.top = i * SIDE + 'px'
+      node.style.left = j * SIDE + 'px'
       worldMap[i][j] = { x: j, y: i, walkable: true }
-      fragment.appendChild(cell)
+      fragment.appendChild(node)
     }
   }
   world.appendChild(fragment)
   world.style.height = HEIGHT * SIDE - 5 + 'px'
   world.style.width = WIDTH * SIDE - 5 + 'px'
-  cells = world.children
+  nodes = world.children
 }
 
 function inspectMouse() {

@@ -1,26 +1,27 @@
 /**
- * A* pathfinding algorithm
- * https://github.com/myst729/a-star-pathfinding
+ * A* Algoritmo MIT License
+ * @version 0.0.1
+ * @description Clacula el camino más corto entre dos puntos
+ * @author Iván Sánchez, Melissa Cueto, Cesar Huerta
  */
 
 function aStarSearch(from, to, worldMap) {
-  var ORTHOGONAL = 10
-  var DIAGONAL = 14
-  var height = worldMap.length
-  var width = worldMap[0].length
-  var openList = []
+  let ORTHOGONAL = 10
+  let DIAGONAL = 14
+  let height = worldMap.length
+  let width = worldMap[0].length
+  let openList = []
 
-  // Get a node's children.
   function getChildren(parent) {
-    var children = []
-    var walkables = {}
-    var neighbor
+    let children = []
+    let walkables = {}
+    let neighbor
 
-    // LEFT
+    // Izquierda
     if(parent.x > 0) {
       neighbor = worldMap[parent.y][parent.x - 1]
-      // If a neighbor is (1) walkable, (2) not closed and (3) has lower cost through current node,
-      // set current node as its parent and recalculate its cost, manhattan and estimated values.
+      // Si el vecino es no es un bloqueo, no esta cerrado y tiene bajo costo, 
+      // se convertirá en el nuevo nodo.
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
         neighbor.parent = parent
         neighbor.cost = parent.cost + ORTHOGONAL
@@ -31,7 +32,7 @@ function aStarSearch(from, to, worldMap) {
       walkables.left = neighbor.walkable
     }
 
-    // RIGHT
+    // Derecha
     if(parent.x < width - 1) {
       neighbor = worldMap[parent.y][parent.x + 1]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
@@ -44,7 +45,7 @@ function aStarSearch(from, to, worldMap) {
       walkables.right = neighbor.walkable
     }
 
-    // UP
+    // Arriba
     if(parent.y > 0) {
       neighbor = worldMap[parent.y - 1][parent.x]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
@@ -57,7 +58,7 @@ function aStarSearch(from, to, worldMap) {
       walkables.up = neighbor.walkable
     }
 
-    // DOWN
+    // Abajo
     if(parent.y < height - 1) {
       neighbor = worldMap[parent.y + 1][parent.x]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + ORTHOGONAL) {
@@ -70,8 +71,7 @@ function aStarSearch(from, to, worldMap) {
       walkables.down = neighbor.walkable
     }
 
-    // UPLEFT
-    // Do not consider upleft neighbor if both up neighbor and left neighbor are not walkable.
+    // Arriba-Izquierda
     if((walkables.up || walkables.left) && (parent.x > 0 && parent.y > 0)) {
       neighbor = worldMap[parent.y - 1][parent.x - 1]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
@@ -83,7 +83,7 @@ function aStarSearch(from, to, worldMap) {
       }
     }
 
-    // UPRIGHT
+    // Arriba-Derecha
     if((walkables.up || walkables.right) && (parent.x < width - 1 && parent.y > 0)) {
       neighbor = worldMap[parent.y - 1][parent.x + 1]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
@@ -95,7 +95,7 @@ function aStarSearch(from, to, worldMap) {
       }
     }
 
-    // DOWNLEFT
+    // Abajo-Izquierda
     if((walkables.down || walkables.left) && (parent.x > 0 && parent.y < height - 1)) {
       neighbor = worldMap[parent.y + 1][parent.x - 1]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
@@ -107,7 +107,7 @@ function aStarSearch(from, to, worldMap) {
       }
     }
 
-    // DOWNRIGHT
+    // Abajo-Derecha
     if((walkables.down || walkables.right) && (parent.x < width - 1 && parent.y < height - 1)) {
       neighbor = worldMap[parent.y + 1][parent.x + 1]
       if(neighbor.walkable && !neighbor.closed && neighbor.cost > parent.cost + DIAGONAL) {
@@ -122,9 +122,9 @@ function aStarSearch(from, to, worldMap) {
     return children
   }
 
-  // Reinitialize
-  for(var h = 0; h < height; h++) {
-    for(var w = 0; w < width; w++) {
+  // Reinicializar
+  for(let h = 0; h < height; h++) {
+    for(let w = 0; w < width; w++) {
       worldMap[h][w].cost = Infinity
       worldMap[h][w].open = false
       worldMap[h][w].closed = false
@@ -135,21 +135,20 @@ function aStarSearch(from, to, worldMap) {
   from.open = true
   openList.push(from)
 
-  // Search while open list is not empty.
+  
   while(openList.length) {
-    // Pick the one with lowest estimated value from open list.
-    var current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop()
-    var children = getChildren(current)
+    // Toma el valor con el costo estimado más bajo.
+    let current = openList.sort(function(a, b) { return b.estimated - a.estimated }).pop()
+    let children = getChildren(current)
 
     current.closed = true
 
-    for(var i = 0, l = children.length; i < l; i++) {
-      // Destination reached!
+    for(let i = 0, l = children.length; i < l; i++) {
+      // Ha llegado a su destino
       if(children[i].manhattan === 0) {
-        var step = children[i].parent
-        var path = []
+        let step = children[i].parent
+        let path = []
 
-        // Haven't got back to starting point yet.
         while(step.cost !== 0) {
           path.push(step)
           step = step.parent
@@ -158,7 +157,6 @@ function aStarSearch(from, to, worldMap) {
         return path.reverse()
       }
 
-      // If the child is not in open list, put it in.
       if(!children[i].open) {
         children[i].open = true
         openList.push(children[i])
@@ -166,6 +164,6 @@ function aStarSearch(from, to, worldMap) {
     }
   }
 
-  // Cannot find a path.
+  // No se encontró camino
   return null
 }
